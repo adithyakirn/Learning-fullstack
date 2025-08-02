@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Prata&display=swap');
+@import "tailwindcss";
 
 .prata-regular {
   font-family: "Prata", serif;
@@ -14,4 +14,15 @@ a.active hr {
   opacity: 1;
   transition: visibility 0.3s ease-in-out,
               opacity 0.3s ease-in-out;
+}
+
+::-webkit-scrollbar{
+  display: none;
+}
+
+@media (max-width:640px) {
+   a.active{
+    background-color: black;
+    color: white;
+   }
 }
