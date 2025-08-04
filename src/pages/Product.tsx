@@ -1,38 +1,41 @@
-import { useContext, useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import { ShopContext, type ShopContextType } from "../context/ShopContextValue"
-import { assets, type ProductType } from "../assets/assets"
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { ShopContext, type ShopContextType } from "../context/ShopContextValue";
+import { assets, type ProductType } from "../assets/assets";
+import RelatedProducts from "../components/RelatedProducts";
 
 const Product = () => {
-  const { productId } = useParams()
-  const { products,currency } = useContext(ShopContext) as ShopContextType
-  const [productData, setProductData] = useState<ProductType>()
-  const [image, setImage] = useState('')
-  const [size,setSize] = useState('')
+  const { productId } = useParams();
+  const { products, currency, addToCart } = useContext(
+    ShopContext
+  ) as ShopContextType;
+  const [productData, setProductData] = useState<ProductType>();
+  const [image, setImage] = useState("");
+  const [size, setSize] = useState("");
 
-  const fetchProductData = async () => {
+  useEffect(() => {
     products.map((item) => {
       if (item.id === productId) {
-        setProductData(item)
-        setImage(item.image[0])
-        return null
+        setProductData(item);
+        setImage(item.image[0]);
+        return null;
       }
-    })
-  }
-  useEffect(() => {
-    fetchProductData()
-  }, [productId])
+    });
+  }, [productId, products]);
 
   return productData ? (
     <div className="border-t-2 pt-10 transition-opacity ease-in duraiton-500 opacity-100">
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
           <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
-            {
-              productData.image.map((item,index) => (
-                <img onClick={() => setImage(item)} src={item} key={index} className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"/>
-              ))
-            }
+            {productData.image.map((item, index) => (
+              <img
+                onClick={() => setImage(item)}
+                src={item}
+                key={index}
+                className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
+              />
+            ))}
           </div>
           <div className="w-full sm:w-[80%]">
             <img className="w-full h-auto" src={image} alt="" />
@@ -48,18 +51,36 @@ const Product = () => {
             <img src={assets.star_dull_icon} alt="" className="w-3 5" />
             <p className="pl-2">(122)</p>
           </div>
-          <p className="mt-5 text-3xl font-medium">{currency}{productData.price}</p>
-          <p className="mt-5 text-gray-500 md:w-4/5">{productData.description}</p>
+          <p className="mt-5 text-3xl font-medium">
+            {currency}
+            {productData.price}
+          </p>
+          <p className="mt-5 text-gray-500 md:w-4/5">
+            {productData.description}
+          </p>
           <div className="flex flex-col gap-4 my-8">
             <p>Select Size</p>
             <div className="flex gap-2">
-              {productData.sizes.map((item,index) => (
-                <button onClick={() => setSize(item)} className={`border py-2 px-4 cursor-pointer bg-gray-100 ${item === size ? "border-orange-500" : ""}`} key={index}>{item}</button>
+              {productData.sizes.map((item, index) => (
+                <button
+                  onClick={() => setSize(item)}
+                  className={`border py-2 px-4 cursor-pointer bg-gray-100 ${
+                    item === size ? "border-orange-500" : ""
+                  }`}
+                  key={index}
+                >
+                  {item}
+                </button>
               ))}
             </div>
           </div>
-          <button className="bg-black text-white text-sm px-8 py-3 active:bg-gray-700 cursor-pointer">ADD TO CART</button>
-          <hr className="mt-8 sm:w-4/5"/>
+          <button
+            onClick={() => addToCart(productData.id, size)}
+            className="bg-black text-white text-sm px-8 py-3 active:bg-gray-700 cursor-pointer"
+          >
+            ADD TO CART
+          </button>
+          <hr className="mt-8 sm:w-4/5" />
           <div className="text-sm flex text-gray-500 mt-5 flex-col gap-1">
             <p>100% Original product</p>
             <p>Cash on delivery is available on this product</p>
@@ -73,13 +94,27 @@ const Product = () => {
           <p className="border px-5 py-3 text-sm">Review (122)</p>
         </div>
         <div className="flex flex-col gap-4 border py-6 px-6 text-sm text-gray-500">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor quam quis quasi asperiores vero cumque ratione incidunt illo reprehenderit quae perspiciatis ipsa quos magni error et, reiciendis temporibus, modi sint.</p>
-          <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Omnis illum dicta reiciendis! Sint ad, vel aut officia enim doloremque sequi in beatae adipisci fugit! Dolorum nihil nobis quae dicta ea!</p>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor quam
+            quis quasi asperiores vero cumque ratione incidunt illo
+            reprehenderit quae perspiciatis ipsa quos magni error et, reiciendis
+            temporibus, modi sint.
+          </p>
+          <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Omnis
+            illum dicta reiciendis! Sint ad, vel aut officia enim doloremque
+            sequi in beatae adipisci fugit! Dolorum nihil nobis quae dicta ea!
+          </p>
         </div>
       </div>
-      
+      <RelatedProducts
+        category={productData.category}
+        subCategory={productData.subCategory}
+      />
     </div>
-  ) : <div className="opacity-0"></div>
-}
+  ) : (
+    <div className="opacity-0"></div>
+  );
+};
 
-export default Product
+export default Product;
